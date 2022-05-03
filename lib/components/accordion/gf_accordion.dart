@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 
+import 'gf_accordion_controller.dart';
+
 class GFAccordion extends StatefulWidget {
   /// An accordion is used to show (and hide) content. Use [showAccordion] to hide & show the accordion content.
   const GFAccordion(
@@ -22,8 +24,10 @@ class GFAccordion extends StatefulWidget {
       this.margin,
       this.showAccordion = false,
       this.onToggleCollapsed,
+      this.controller,
       this.titleBorderRadius = const BorderRadius.all(Radius.circular(0)),
       this.contentBorderRadius = const BorderRadius.all(Radius.circular(0))})
+
       : super(key: key);
 
   /// controls if the accordion should be collapsed or not making it possible to be controlled from outside
@@ -83,6 +87,8 @@ class GFAccordion extends StatefulWidget {
   /// function called when the content body collapsed
   final Function(bool)? onToggleCollapsed;
 
+  final GfAccordionController? controller;
+
   @override
   _GFAccordionState createState() => _GFAccordionState();
 }
@@ -110,6 +116,11 @@ class _GFAccordionState extends State<GFAccordion>
         curve: Curves.fastOutSlowIn,
       ),
     );
+    widget.controller?.registerCallback(() {
+      if(mounted) {
+        _toggleCollapsed();
+      }
+    });
     super.initState();
   }
 
@@ -117,6 +128,7 @@ class _GFAccordionState extends State<GFAccordion>
   void dispose() {
     animationController.dispose();
     controller.dispose();
+    widget.controller?.dispose();
     super.dispose();
   }
 
